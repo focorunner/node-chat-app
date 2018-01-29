@@ -154,22 +154,42 @@ button:disabled {
   padding: 10px;
 }
 
-.message {
-  padding: 10px;
-}
 
-.message__title {
+.message__box {
   display: flex;
   margin-bottom: 5px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #ddf5fd;
 }
 
-.message__title h4 {
+.message__box.me {
+  background-color: #dbf3e0;
+}
+
+.message__timestamp {
+  font-size: .5em;
+  padding: 0px 5px;
+  width:100%;
+  text-align: right;
+  position:relative;
+  top:10px;
+}
+
+.message__box h4 {
   font-weight: 600;
   margin-right: 10px;
+  color: #777;
 }
 
-.message__title span {
-  color: #999;
+.message_box div {
+  color: #fff;
+  padding-right: 5px;
+  min-width: 60px;
+}
+
+.message__body p {
+  color: #000;
 }
 
 @media (max-width: 600px) {

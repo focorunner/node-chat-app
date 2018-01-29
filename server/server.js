@@ -22,8 +22,13 @@ io.on('connection', (socket) => {
   socket.on('join', (params, callback) => {
     if(!isRealString(params.name) || !isRealString(params.room)) {
       return callback('Name and room name are required');
-    } else if(users.getUserByName(params.name)) {
-      return callback('Display name already taken');
+    }
+    if(params.name.toLowerCase() === 'admin') {
+      return callback("There can be only one Admin...\nPick a different name.");
+    }
+    var user = users.getUserByName(params.name)
+    if(user && user.room === params.room) {
+      return callback('Display name already taken in room ' + params.room + '.\nPick a different name.');
     }
 
     params.room = params.room.toLowerCase();
@@ -35,7 +40,13 @@ io.on('connection', (socket) => {
     io.to(params.room).emit('updateUserList', users.getUserList(params.room));
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to the Chat App'));
     socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
+    // socket.broadcast.emit('roomSelector', users.getRoomList());  
     callback();
+  });
+
+  socket.on('loadIndex', () => {
+    var rooms = users.getRoomList();
+    socket.emit('roomSelector', rooms);
   });
 
   socket.on('createMessage', (message, callback) => {
@@ -63,6 +74,7 @@ io.on('connection', (socket) => {
     if(user) {
       io.to(user.room).emit('updateUserList', users.getUserList(user.room));
       io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
+      // socket.broadcast.emit('roomSelector', users.getRoomList());  
     }  
   });
 });

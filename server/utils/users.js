@@ -10,6 +10,19 @@ class Users {
     return user;
   }
 
+  getRoomList() {
+    var roomList = {};
+    this.users.forEach(function(user) {
+      if(!roomList[user.room]){
+        roomList[user.room] = 1;
+        return;
+      }
+      roomList[user.room]++;
+    });
+
+    return roomList;
+  }
+
   removeUser(id) {
     var user = this.getUser(id);
 

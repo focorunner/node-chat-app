@@ -1,4 +1,5 @@
 var socket = io();
+var myUser;
 
 function scrollToBottom() {
   // Selectors
@@ -18,7 +19,7 @@ function scrollToBottom() {
 
 socket.on('connect', function() {
   var params = $.deparam(window.location.search);
-  
+
   socket.emit('join', params, function(err) {
     if(err) {
       alert(err);
@@ -49,7 +50,8 @@ socket.on('newMessage', function(message) {
   var html = Mustache.render(template, {
     text: message.text,
     from: message.from,
-    createdAt: formattedTime
+    createdAt: formattedTime,
+    class: $.deparam(window.location.search).name === message.from ? 'me' : ''
   });
 
   $('#messages').append(html);
@@ -62,7 +64,8 @@ socket.on('newLocationMessage', function(message) {
   var html = Mustache.render(template, {
     url: message.url,
     from: message.from,
-    createdAt: formattedTime
+    createdAt: formattedTime,
+    class: $.deparam(window.location.search).name === message.from ? 'me' : ''
   });
 
   $('#messages').append(html);
@@ -77,7 +80,7 @@ $('#message-form').on('submit', function(e) {
   socket.emit('createMessage', {
     text: messageTextbox.val()
   }, function() {
-    messageTextbox.val('');
+    messageTextbox.val('').focus();
   });
 });
 
